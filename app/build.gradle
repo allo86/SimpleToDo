@@ -2,9 +2,16 @@ apply plugin: 'com.android.application'
 apply plugin: 'com.neenbedankt.android-apt'
 
 android {
+    signingConfigs {
+        release {
+            keyAlias release.keyAlias
+            keyPassword release.keyPassword
+            storeFile file('~/keystore.jks')
+            storePassword release.storePassword
+        }
+    }
     compileSdkVersion 23
-    buildToolsVersion "23.0.2"
-
+    buildToolsVersion "23.0.3"
     defaultConfig {
         applicationId "com.allo.simpletodo"
         minSdkVersion 16
@@ -16,12 +23,13 @@ android {
         release {
             minifyEnabled false
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
+            signingConfig signingConfigs.release
         }
     }
 }
 
 dependencies {
-    compile fileTree(dir: 'libs', include: ['*.jar'])
+    compile fileTree(include: ['*.jar'], dir: 'libs')
     testCompile 'junit:junit:4.12'
     compile 'com.android.support:appcompat-v7:23.4.0'
     compile 'com.jakewharton:butterknife:8.1.0'
