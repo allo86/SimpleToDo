@@ -3,37 +3,36 @@ package com.allo.simpletodo;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
-import android.view.View;
-import android.widget.AdapterView;
-import android.widget.ArrayAdapter;
-import android.widget.EditText;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.widget.ListView;
-import android.widget.Toast;
+import android.widget.TextView;
 
-import com.allo.simpletodo.utils.ValidationException;
+import com.activeandroid.query.Select;
+import com.allo.simpletodo.model.Item;
+import com.allo.simpletodo.utils.ItemsAdapter;
 
-import org.apache.commons.io.FileUtils;
-
-import java.io.File;
-import java.io.IOException;
-import java.util.ArrayList;
+import java.util.List;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
-import butterknife.OnClick;
 import butterknife.OnItemClick;
 import butterknife.OnItemLongClick;
 
+/**
+ * Main Acivity
+ */
 public class MainActivity extends AppCompatActivity {
 
     @BindView(R.id.lvItems)
     ListView lvItems;
 
-    @BindView(R.id.etNewItem)
-    EditText etNewItem;
+    @BindView(R.id.tvEmptyMessage)
+    TextView tvEmptyMessage;
 
-    ArrayList<String> items;
-    ArrayAdapter<String> itemsAdapter;
+    List<Item> items;
+    ItemsAdapter itemsAdapter;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -42,97 +41,66 @@ public class MainActivity extends AppCompatActivity {
 
         ButterKnife.bind(this);
 
-        loadData();
+        lvItems.setEmptyView(tvEmptyMessage);
+
+        reloadData();
+    }
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        MenuInflater inflater = getMenuInflater();
+        inflater.inflate(R.menu.main, menu);
+        return true;
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()) {
+            case R.id.ic_new:
+                addItem();
+                return true;
+            default:
+                return super.onOptionsItemSelected(item);
+        }
     }
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         if (resultCode == RESULT_OK && requestCode == EditItemActivity.EDIT_ITEM_REQUEST_CODE) {
-            String item = data.getExtras().getString(EditItemActivity.EDIT_ITEM_TEXT);
-            int position = data.getExtras().getInt(EditItemActivity.EDIT_ITEM_POSITION);
-            if (position == -1) {
-                // New item
-                items.add(item);
-            } else {
-                // Existing item
-                items.set(position, item);
-            }
-            itemsAdapter.notifyDataSetChanged();
-
-            writeItems();
+            reloadData();
         }
     }
 
-    private void loadData() {
-        readItems();
-
-        itemsAdapter = new ArrayAdapter<>(this, android.R.layout.simple_list_item_1, items);
-
-        lvItems.setAdapter(itemsAdapter);
-    }
-
-    @OnClick(R.id.btnAddItem)
-    public void onAddItem() {
-        try {
-            validateItem();
-
-            addItem();
-        } catch (ValidationException ex) {
-            Toast.makeText(this, ex.getMessage(), Toast.LENGTH_LONG).show();
-        }
-    }
-
-    private void validateItem() throws ValidationException {
-        String item = etNewItem.getText().toString();
-        if ("".equals(item.trim())) {
-            throw new ValidationException(getString(R.string.edit_item_empty_validation));
+    private void reloadData() {
+        items = new Select().from(Item.class).execute();
+        if (itemsAdapter != null) {
+            itemsAdapter.notifyDataSetChanged(items);
+        } else {
+            itemsAdapter = new ItemsAdapter(this, items);
+            lvItems.setAdapter(itemsAdapter);
         }
     }
 
     private void addItem() {
-        itemsAdapter.add(etNewItem.getText().toString());
-        etNewItem.setText("");
-
-        writeItems();
+        Intent intent = new Intent(this, EditItemActivity.class);
+        startActivityForResult(intent, EditItemActivity.EDIT_ITEM_REQUEST_CODE);
     }
 
     @OnItemClick(R.id.lvItems)
-    public void onListItemClick(AdapterView<?> parent, View view, int position, long id) {
+    public void onListItemClick(int position) {
         Intent intent = new Intent(this, EditItemActivity.class);
 
-        intent.putExtra(EditItemActivity.EDIT_ITEM_POSITION, position);
-        intent.putExtra(EditItemActivity.EDIT_ITEM_TEXT, items.get(position));
+        intent.putExtra(EditItemActivity.EDIT_ITEM_ID, items.get(position).getId());
 
         startActivityForResult(intent, EditItemActivity.EDIT_ITEM_REQUEST_CODE);
     }
 
     @OnItemLongClick(R.id.lvItems)
-    public boolean onListItemLongClick(AdapterView<?> parent, View view, int position, long id) {
+    public boolean onListItemLongClick(int position) {
+        items.get(position).delete();
         items.remove(position);
         itemsAdapter.notifyDataSetChanged();
 
-        writeItems();
-
         return true;
-    }
-
-    private void readItems() {
-        File filesDir = getFilesDir();
-        File todoFile = new File(filesDir, "todo.txt");
-        try {
-            items = new ArrayList<>(FileUtils.readLines(todoFile));
-        } catch (IOException ex) {
-            items = new ArrayList<>();
-        }
-    }
-
-    private void writeItems() {
-        File filesDir = getFilesDir();
-        File todoFile = new File(filesDir, "todo.txt");
-        try {
-            FileUtils.writeLines(todoFile, items);
-        } catch (IOException ex) {
-            ex.printStackTrace();
-        }
     }
 }

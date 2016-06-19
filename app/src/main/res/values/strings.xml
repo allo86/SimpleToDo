@@ -1,10 +1,22 @@
 <resources>
     <string name="app_name">SimpleTodo</string>
 
+    <string name="no_items_message">No items here &#8230;\nTouch the + button in the action bar\nto add a new item</string>
     <string name="add_item">Add Item</string>
     <string name="new_item">New Item</string>
     <string name="save_item">Save Item</string>
 
     <string name="edit_item_hint">Write your item here &#8230;</string>
     <string name="edit_item_empty_validation">Please write something for your item</string>
+    <string name="edit_item_priority">Priority</string>
+
+    <string name="priority_low">Low</string>
+    <string name="priority_normal">Normal</string>
+    <string name="priority_high">High</string>
+
+    <string-array name="priority_array">
+        <item>@string/priority_low</item>
+        <item>@string/priority_normal</item>
+        <item>@string/priority_high</item>
+    </string-array>
 </resources>
