@@ -1,8 +1,10 @@
 package com.allo.simpletodo;
 
+import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.EditText;
 import android.widget.Toast;
 
@@ -54,10 +56,17 @@ public class EditItemActivity extends AppCompatActivity {
     }
 
     private void saveItem() {
+        hideKeyboard();
+
         Intent data = new Intent();
         data.putExtra(EDIT_ITEM_TEXT, etEditItem.getText().toString());
         data.putExtra(EDIT_ITEM_POSITION, position);
         setResult(RESULT_OK, data);
         finish();
+    }
+
+    private void hideKeyboard() {
+        InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
+        imm.hideSoftInputFromWindow(etEditItem.getWindowToken(), 0);
     }
 }
