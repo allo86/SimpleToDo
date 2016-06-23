@@ -4,7 +4,7 @@
 
 Submitted by: **Andrés Llerena**
 
-Time spent: 3 hours spent in total
+Time spent: 6 hours spent in total
 
 ## User Stories
 
@@ -14,13 +14,15 @@ Time spent: 3 hours spent in total
 * [x] Persist the todo items [into SQLite](http://guides.codepath.com/android/Persisting-Data-to-the-Device#sqlite) instead of a text file
 * [x] Improve style of the todo items in the list [using a custom adapter](http://guides.codepath.com/android/Using-an-ArrayAdapter-with-ListView)
 * [x] Add support for selecting the priority of each todo item (and display in listview item)
+* [x] Add support for completion due dates for todo items (using date and time picker dialogs and display within listview item)
 * [x] Tweak the style improving the UI / UX, play with colors, images or backgrounds
+* [x] Simple [shared element transition](https://github.com/codepath/android_guides/wiki/Shared-Element-Activity-Transition) from listview to Edit Activity
 
 ## Video Walkthrough 
 
 Here's a walkthrough of the app:
 
-<img src='http://i.imgur.com/d6vHcM9.gif' title='Video Walkthrough' width='' alt='Video Walkthrough' />
+<img src='http://i.imgur.com/LzsvYDJ.gif' title='Video Walkthrough' width='' alt='Video Walkthrough' />
 
 GIF created with [LiceCap](http://www.cockos.com/licecap/).
 
