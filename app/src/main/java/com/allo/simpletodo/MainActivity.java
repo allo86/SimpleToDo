@@ -11,7 +11,6 @@ import android.widget.TextView;
 
 import com.activeandroid.query.Select;
 import com.allo.simpletodo.model.Item;
-import com.allo.simpletodo.utils.ItemsAdapter;
 
 import java.util.List;
 

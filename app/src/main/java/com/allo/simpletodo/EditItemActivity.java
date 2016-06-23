@@ -7,15 +7,23 @@ import android.support.v7.app.AppCompatActivity;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
+import android.view.View;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.ArrayAdapter;
+import android.widget.CheckBox;
+import android.widget.CompoundButton;
 import android.widget.EditText;
 import android.widget.Spinner;
 import android.widget.Toast;
 
 import com.activeandroid.query.Select;
 import com.allo.simpletodo.model.Item;
+import com.allo.simpletodo.ui.CustomDateEditText;
+import com.allo.simpletodo.ui.CustomTimeEditText;
 import com.allo.simpletodo.utils.ValidationException;
+
+import java.util.Calendar;
+import java.util.Date;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -35,6 +43,15 @@ public class EditItemActivity extends AppCompatActivity {
     @BindView(R.id.spPriority)
     Spinner spPriority;
 
+    @BindView(R.id.cb_due_date)
+    CheckBox cbDueDate;
+
+    @BindView(R.id.et_date)
+    CustomDateEditText etDate;
+
+    @BindView(R.id.et_time)
+    CustomTimeEditText etTime;
+
     private Item item;
 
     @Override
@@ -50,6 +67,19 @@ public class EditItemActivity extends AppCompatActivity {
             item = new Select().from(Item.class).where("id = ?", getIntent().getLongExtra(EDIT_ITEM_ID, 0L)).executeSingle();
             etEditItem.append(item.getDescription());
             spPriority.setSelection(item.getPriority());
+            if (item.getDueDate() != null) {
+                cbDueDate.setChecked(true);
+                etDate.setDate(item.getDueDate());
+                Calendar calendar = Calendar.getInstance();
+                calendar.setTime(item.getDueDate());
+                etTime.setTime(calendar.get(Calendar.HOUR_OF_DAY), calendar.get(Calendar.MINUTE));
+                //etDate.setVisibility(View.VISIBLE);
+                //etTime.setVisibility(View.VISIBLE);
+            } else {
+                cbDueDate.setChecked(false);
+                //etDate.setVisibility(View.INVISIBLE);
+                //etTime.setVisibility(View.INVISIBLE);
+            }
         }
     }
 
@@ -77,6 +107,25 @@ public class EditItemActivity extends AppCompatActivity {
                 getResources().getStringArray(R.array.priority_array));
         dataAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         spPriority.setAdapter(dataAdapter);
+
+        cbDueDate.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                if (isChecked) {
+                    etDate.setVisibility(View.VISIBLE);
+                    etTime.setVisibility(View.VISIBLE);
+                    if (etDate.getDate() == null) {
+                        etDate.setDate(new Date());
+                    }
+                } else {
+                    etDate.setVisibility(View.INVISIBLE);
+                    etTime.setVisibility(View.INVISIBLE);
+                }
+            }
+        });
+        cbDueDate.setChecked(false);
+        etDate.setVisibility(View.INVISIBLE);
+        etTime.setVisibility(View.INVISIBLE);
     }
 
     public void performSaveItem() {
@@ -104,6 +153,17 @@ public class EditItemActivity extends AppCompatActivity {
         }
         item.setDescription(etEditItem.getText().toString());
         item.setPriority(spPriority.getSelectedItemPosition());
+        if (cbDueDate.isChecked()) {
+            Calendar calendar = Calendar.getInstance();
+            calendar.setTime(etDate.getDate());
+            calendar.set(Calendar.HOUR_OF_DAY, etTime.getHourOfDay());
+            calendar.set(Calendar.MINUTE, etTime.getMinute());
+            calendar.set(Calendar.SECOND, 0);
+            calendar.set(Calendar.MILLISECOND, 0);
+            item.setDueDate(calendar.getTime());
+        } else {
+            item.setDueDate(null);
+        }
         if (item != null) item.save();
 
         Intent data = new Intent();

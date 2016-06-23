@@ -5,6 +5,7 @@ import com.activeandroid.annotation.Column;
 import com.activeandroid.annotation.Table;
 
 import java.io.Serializable;
+import java.util.Date;
 
 /**
  * Created by ALLO on 19/6/16.
@@ -17,6 +18,9 @@ public class Item extends Model implements Serializable {
 
     @Column(name = "priority")
     public int priority;
+
+    @Column(name = "dueDate")
+    public Date dueDate;
 
     public Item() {
         super();
@@ -36,5 +40,13 @@ public class Item extends Model implements Serializable {
 
     public void setPriority(int priority) {
         this.priority = priority;
+    }
+
+    public Date getDueDate() {
+        return dueDate;
+    }
+
+    public void setDueDate(Date dueDate) {
+        this.dueDate = dueDate;
     }
 }

@@ -23,6 +23,7 @@
         android:lines="10" />
 
     <LinearLayout
+        android:id="@+id/container_priority"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_below="@+id/etEditItem"
@@ -48,6 +49,46 @@
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="1" />
+
+    </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/container_due_date"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/container_priority"
+        android:layout_marginBottom="@dimen/activity_vertical_margin"
+        android:layout_marginEnd="@dimen/activity_horizontal_margin"
+        android:layout_marginLeft="@dimen/activity_horizontal_margin"
+        android:layout_marginRight="@dimen/activity_horizontal_margin"
+        android:layout_marginStart="@dimen/activity_horizontal_margin"
+        android:layout_marginTop="@dimen/activity_vertical_margin"
+        android:gravity="center_vertical"
+        android:orientation="horizontal">
+
+        <CheckBox
+            android:id="@+id/cb_due_date"
+            style="@style/default_text_style"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="2"
+            android:text="@string/edit_item_due_date" />
+
+        <com.allo.simpletodo.ui.CustomDateEditText
+            android:id="@+id/et_date"
+            style="@style/default_date_time_text_style"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:gravity="center" />
+
+        <com.allo.simpletodo.ui.CustomTimeEditText
+            android:id="@+id/et_time"
+            style="@style/default_date_time_text_style"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:gravity="center" />
 
     </LinearLayout>
 

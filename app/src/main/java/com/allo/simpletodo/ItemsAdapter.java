@@ -1,4 +1,4 @@
-package com.allo.simpletodo.utils;
+package com.allo.simpletodo;
 
 import android.content.Context;
 import android.support.v4.content.ContextCompat;
@@ -6,12 +6,12 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
-import android.widget.RelativeLayout;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 
-import com.allo.simpletodo.R;
 import com.allo.simpletodo.model.Item;
 import com.allo.simpletodo.model.Priority;
+import com.allo.simpletodo.utils.Utils;
 
 import java.util.List;
 
@@ -66,6 +66,12 @@ public class ItemsAdapter extends BaseAdapter {
 
         holder.tvDescription.setText(item.getDescription());
         holder.container.setBackgroundColor(ContextCompat.getColor(context, priority.getBackgroundColorResource()));
+        if (item.getDueDate() != null) {
+            holder.tvDueDate.setVisibility(View.VISIBLE);
+            holder.tvDueDate.setText(Utils.formatDateTime(item.getDueDate()));
+        } else {
+            holder.tvDueDate.setVisibility(View.GONE);
+        }
 
         return convertView;
     }
@@ -77,10 +83,13 @@ public class ItemsAdapter extends BaseAdapter {
 
     static class ViewHolder {
         @BindView(R.id.container)
-        RelativeLayout container;
+        LinearLayout container;
 
         @BindView(R.id.tvDescription)
         TextView tvDescription;
+
+        @BindView(R.id.tvDueDate)
+        TextView tvDueDate;
 
         public ViewHolder(View view) {
             ButterKnife.bind(this, view);
