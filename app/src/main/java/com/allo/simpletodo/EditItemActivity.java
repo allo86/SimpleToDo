@@ -3,6 +3,7 @@ package com.allo.simpletodo;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
+import android.support.v4.view.ViewCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -36,6 +37,8 @@ public class EditItemActivity extends AppCompatActivity {
     public static final int EDIT_ITEM_REQUEST_CODE = 123;
 
     public static final String EDIT_ITEM_ID = "EDIT_ITEM_ID";
+
+    public static final String EDIT_ITEM_DESCRIPTION = "EDIT_ITEM_DESCRIPTION";
 
     @BindView(R.id.etEditItem)
     EditText etEditItem;
@@ -73,12 +76,8 @@ public class EditItemActivity extends AppCompatActivity {
                 Calendar calendar = Calendar.getInstance();
                 calendar.setTime(item.getDueDate());
                 etTime.setTime(calendar.get(Calendar.HOUR_OF_DAY), calendar.get(Calendar.MINUTE));
-                //etDate.setVisibility(View.VISIBLE);
-                //etTime.setVisibility(View.VISIBLE);
             } else {
                 cbDueDate.setChecked(false);
-                //etDate.setVisibility(View.INVISIBLE);
-                //etTime.setVisibility(View.INVISIBLE);
             }
         }
     }
@@ -96,12 +95,17 @@ public class EditItemActivity extends AppCompatActivity {
             case R.id.ic_save:
                 performSaveItem();
                 return true;
+            case android.R.id.home:
+                onBackPressed();
+                return true;
             default:
                 return super.onOptionsItemSelected(item);
         }
     }
 
     private void initializeUI() {
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+
         ArrayAdapter<String> dataAdapter = new ArrayAdapter<>(this,
                 android.R.layout.simple_spinner_item,
                 getResources().getStringArray(R.array.priority_array));
@@ -126,6 +130,8 @@ public class EditItemActivity extends AppCompatActivity {
         cbDueDate.setChecked(false);
         etDate.setVisibility(View.INVISIBLE);
         etTime.setVisibility(View.INVISIBLE);
+
+        ViewCompat.setTransitionName(etEditItem, EDIT_ITEM_DESCRIPTION);
     }
 
     public void performSaveItem() {

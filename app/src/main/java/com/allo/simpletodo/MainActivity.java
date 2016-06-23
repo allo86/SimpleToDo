@@ -2,10 +2,13 @@ package com.allo.simpletodo;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.support.v4.app.ActivityCompat;
+import android.support.v4.app.ActivityOptionsCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
+import android.view.View;
 import android.widget.ListView;
 import android.widget.TextView;
 
@@ -86,12 +89,14 @@ public class MainActivity extends AppCompatActivity {
     }
 
     @OnItemClick(R.id.lvItems)
-    public void onListItemClick(int position) {
+    public void onListItemClick(View view, int position) {
         Intent intent = new Intent(this, EditItemActivity.class);
-
         intent.putExtra(EditItemActivity.EDIT_ITEM_ID, items.get(position).getId());
 
-        startActivityForResult(intent, EditItemActivity.EDIT_ITEM_REQUEST_CODE);
+        ActivityOptionsCompat options = ActivityOptionsCompat.makeSceneTransitionAnimation(this,
+                view,
+                EditItemActivity.EDIT_ITEM_DESCRIPTION);
+        ActivityCompat.startActivityForResult(this, intent, EditItemActivity.EDIT_ITEM_REQUEST_CODE, options.toBundle());
     }
 
     @OnItemLongClick(R.id.lvItems)

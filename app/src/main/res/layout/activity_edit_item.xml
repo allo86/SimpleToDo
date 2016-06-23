@@ -20,7 +20,7 @@
         android:layout_alignParentTop="true"
         android:hint="@string/edit_item_hint"
         android:inputType="textMultiLine"
-        android:lines="10" />
+        android:lines="5" />
 
     <LinearLayout
         android:id="@+id/container_priority"
